@@ -1,0 +1,82 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum TerrainType
+{
+  EMPTY = 0,
+  WALL = 1
+}
+
+public class Grid
+{
+  //Constructor
+  public Grid()
+  {
+    Mat = DrawHelper.boardMat;
+    x = 0;
+    y = 0;
+    realPosition = Vector2.zero;
+  }
+  public Grid(int _x, int _y, Vector2 _realPos)
+  {
+    Mat = DrawHelper.boardMat;
+    x = _x;
+    y = _y;
+    realPosition = _realPos;
+  }
+  public Grid(int _x, int _y, Vector2 _realPos, Color _color)
+  {
+    Mat = DrawHelper.boardMat;
+    x = _x;
+    y = _y;
+    realPosition = _realPos;
+    color = _color;
+  }
+  public Grid(Grid g)
+  {
+    Mat = DrawHelper.boardMat;
+    x = g.x;
+    y = g.y;
+    color = g.color;
+    terrainType = g.terrainType;
+  }
+
+  //Setting Grid type
+  public void SetType(TerrainType _terrainType)
+  {
+    terrainType = _terrainType;
+    switch (_terrainType)
+    {
+      case TerrainType.WALL:
+        color = Color.black;
+        break;
+    }
+  }
+
+  //Get color
+  public Color _Color()
+  {
+    return color;
+  }
+  //Set color
+  public void _Color(Color c)
+  {
+    color = c;
+  }
+
+  //Public Var
+  public Vector2 realPosition; // real gridPos in world coordinate
+
+  //Private Var
+  Material Mat;
+  private int x = 0; //gridCoordinate
+  private int y = 0; //gridCoordinate
+  private Color color = Color.white; // drawing color on screen
+  private TerrainType terrainType;
+
+  public void Draw()
+  {
+    DrawHelper.DrawQuad(realPosition, 1, color, Mat);
+  }
+}

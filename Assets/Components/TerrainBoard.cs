@@ -14,11 +14,15 @@ public class TerrainBoard : MonoBehaviour
     InitializeGrid();
     instance = this;
     //MapReader.ReadMap(this, "Map2_2LARGEROOMS"); // InitializeGrid is called after map is read
+
+
   }
 
   private void OnPostRender()
   {
     DrawGrid();
+    //DrawHelper.DrawCircleFilled(new Vector2(0, 0), 10, Color.red);
+    //DrawHelper.DrawQuad(new Vector2(0, 0), 50, Color.red);
   }
   private void OnGUI()
   {
@@ -78,9 +82,32 @@ public class TerrainBoard : MonoBehaviour
   /// AGet a copy of a grid to get grid information ( constant renturned value )
   public Grid GetGrid(int x, int y)
   {
+    if (x < 0 || y < 0 || x > boardWidth || y > boardHeight)
+      return null;
     //Make a copy to prevent original grids value modifications
     Grid returnThis = new Grid(grids[x, y]);
     return returnThis;
+  }
+
+  /// AGet a copy of a grid to get grid information ( constant renturned value )
+  public Grid GetGrid(Vector3 v)
+  {
+    float startX = -boardWidth / 2;
+    float startY = -boardHeight / 2;
+    int x = Mathf.RoundToInt(v.x - startX);
+    int y = Mathf.RoundToInt(v.y - startY);
+
+    if (x < 0 || y < 0 || x > boardWidth || y > boardHeight)
+      return null;
+
+    //Make a copy to prevent original grids value modifications
+    Grid returnThis = new Grid(grids[x, y]);
+    return returnThis;
+  }
+
+  public bool IsWall(int x, int y)
+  {
+    return grids[x, y].GetTerrainType() == TerrainType.WALL ;
   }
 
   /// Set Color of a grid
@@ -110,11 +137,8 @@ public class TerrainBoard : MonoBehaviour
   private void DrawGrid()
   {
     for (int x = 0; x < boardWidth; x++)
-
       for (int y = 0; y < boardHeight; y++)
-      {
         grids[x, y].Draw();
-      }
 
   }
 

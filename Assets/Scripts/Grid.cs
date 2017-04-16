@@ -13,21 +13,18 @@ public class Grid
   //Constructor
   public Grid()
   {
-    Mat = DrawHelper.boardMat;
     x = 0;
     y = 0;
     realPosition = Vector2.zero;
   }
   public Grid(int _x, int _y, Vector2 _realPos)
   {
-    Mat = DrawHelper.boardMat;
     x = _x;
     y = _y;
     realPosition = _realPos;
   }
   public Grid(int _x, int _y, Vector2 _realPos, Color _color)
   {
-    Mat = DrawHelper.boardMat;
     x = _x;
     y = _y;
     realPosition = _realPos;
@@ -35,10 +32,10 @@ public class Grid
   }
   public Grid(Grid g)
   {
-    Mat = DrawHelper.boardMat;
     x = g.x;
     y = g.y;
     color = g.color;
+    realPosition = g.realPosition;
     terrainType = g.terrainType;
   }
 
@@ -53,6 +50,12 @@ public class Grid
         break;
     }
   }
+
+  public TerrainType GetTerrainType()
+  {
+    return terrainType;
+  }
+
 
   //Get color
   public Color _Color()
@@ -70,13 +73,13 @@ public class Grid
 
   //Private Var
   Material Mat;
-  private int x = 0; //gridCoordinate
-  private int y = 0; //gridCoordinate
+  public int x = 0; //gridCoordinate
+  public int y = 0; //gridCoordinate
   private Color color = Color.white; // drawing color on screen
   private TerrainType terrainType;
 
   public void Draw()
   {
-    DrawHelper.DrawQuad(realPosition, 1, color, Mat);
+    DrawHelper.DrawQuad(realPosition, 1, color);
   }
 }

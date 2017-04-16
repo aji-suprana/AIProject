@@ -13,7 +13,7 @@ public class DebuggerOnOff : MonoBehaviour {
   //void Update () {
 
   //}
-  private bool DebugPanelOn = false;
+  private bool DebugPanelOn = true;
   public void Toggle()
   {
     //toggle on to off, or off to on

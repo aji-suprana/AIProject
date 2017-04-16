@@ -13,7 +13,7 @@ public class TerrainBoard : MonoBehaviour
     AllocateGrid();
     InitializeGrid();
     instance = this;
-    //MapReader.ReadMap(this, "Map2_2LARGEROOMS"); // InitializeGrid is called after map is read
+    MapReader.ReadMap(this, "Test"); // InitializeGrid is called after map is read
 
 
   }
@@ -24,11 +24,6 @@ public class TerrainBoard : MonoBehaviour
     //DrawHelper.DrawCircleFilled(new Vector2(0, 0), 10, Color.red);
     //DrawHelper.DrawQuad(new Vector2(0, 0), 50, Color.red);
   }
-  private void OnGUI()
-  {
-    DrawGrid();
-  }
-
 
   private void OnValidate()
   {
@@ -50,6 +45,8 @@ public class TerrainBoard : MonoBehaviour
 
   ////////////PRIVATE VAR
   private Grid[,] grids;
+  float startX;
+  float startY;
 
   ////////////PUBLIC FUNCTIONS
   /// Allocating gridboard's Grid in memory
@@ -67,8 +64,9 @@ public class TerrainBoard : MonoBehaviour
     if(debugOn)
       Debugger.Log("Initialized: Gridboard Value");
 
-    float startX = -boardWidth / 2 ;
-    float startY = -boardHeight / 2;
+    startX = -boardWidth / 2;
+    startY = -boardHeight / 2;
+
     for (int y = 0; y < boardHeight; y++)
     {
       for (int x = 0; x < boardWidth; x++)
@@ -82,7 +80,7 @@ public class TerrainBoard : MonoBehaviour
   /// AGet a copy of a grid to get grid information ( constant renturned value )
   public Grid GetGrid(int x, int y)
   {
-    if (x < 0 || y < 0 || x > boardWidth || y > boardHeight)
+    if (x < 0 || y < 0 || x > boardWidth-1 || y > boardHeight-1)
       return null;
     //Make a copy to prevent original grids value modifications
     Grid returnThis = new Grid(grids[x, y]);
@@ -92,11 +90,9 @@ public class TerrainBoard : MonoBehaviour
   /// AGet a copy of a grid to get grid information ( constant renturned value )
   public Grid GetGrid(Vector3 v)
   {
-    float startX = -boardWidth / 2;
-    float startY = -boardHeight / 2;
-    int x = Mathf.RoundToInt(v.x - startX);
-    int y = Mathf.RoundToInt(v.y - startY);
-
+    int x = 0;
+    int y = 0;
+    transformPositionToGridIndex(v, ref x, ref y);
     if (x < 0 || y < 0 || x > boardWidth || y > boardHeight)
       return null;
 
@@ -105,14 +101,36 @@ public class TerrainBoard : MonoBehaviour
     return returnThis;
   }
 
+  public void transformPositionToGridIndex(Vector3 position, ref int x, ref int y)
+  {
+    startX = -boardWidth / 2;
+    startY = -boardHeight / 2;
+    x = Mathf.RoundToInt(position.x - startX);
+    y = Mathf.RoundToInt(position.y - startY);
+
+  }
+
   public bool IsWall(int x, int y)
   {
     return grids[x, y].GetTerrainType() == TerrainType.WALL ;
   }
 
   /// Set Color of a grid
+  public void SetColor(Vector3 v,Color c)
+  {
+    int x = 0;
+    int y = 0;
+    transformPositionToGridIndex(v, ref x, ref y);
+    if (grids[x, y].IsWall())
+      return;
+    grids[x, y]._Color(c);
+  }
+
+  /// Set Color of a grid
   public void SetColor(int x, int y, Color c) 
   {
+    if (grids[x, y].IsWall())
+      return;
     grids[x, y]._Color(c);
   }
 
@@ -125,9 +143,14 @@ public class TerrainBoard : MonoBehaviour
   // Reseting All Colors, used in function before changing map
   public void ResetColor()
   {
-    for(int x = 0; x < boardWidth; x++)
+    for (int x = 0; x < boardWidth; x++)
       for (int y = 0; y < boardWidth; y++)
+      {
+        if (grids[x, y].IsWall())
+          continue;
         grids[x, y]._Color(Color.white);
+
+      }
   }
 
   ////////////PRIVATES FUNCTIONS

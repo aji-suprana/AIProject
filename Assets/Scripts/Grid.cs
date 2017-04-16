@@ -56,6 +56,12 @@ public class Grid
     return terrainType;
   }
 
+  public bool IsWall()
+  {
+    if (terrainType == TerrainType.WALL)
+      return true;
+    return false;
+  }
 
   //Get color
   public Color _Color()
@@ -80,6 +86,7 @@ public class Grid
 
   public void Draw()
   {
+    Vector3 position = new Vector3(realPosition.x, realPosition.y, 3);
     DrawHelper.DrawQuad(realPosition, 1, color);
   }
 }

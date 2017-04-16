@@ -7,7 +7,7 @@ public class AIMovement : MonoBehaviour
   [Range(1,10)]
   public float speed = 3;
 
-  public List<Vector3> targets;
+  public List<Vector2> targets;
   private Vector3 target;
   private Vector3 dir;
 

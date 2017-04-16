@@ -11,7 +11,11 @@ public static class AStar
   {
     public Node() { }
     public Node(Node _parent, Grid g) { parent = _parent; grid = g; }
-    public bool Equals(Node n) { return grid == n.grid; }
+    public bool Equals(Node n)
+    {
+      bool isEqual = grid.x == n.grid.x && grid.y == n.grid.y;
+      return isEqual;
+    }
     public Node parent;
     public Grid grid;
     public float g = 0;
@@ -21,10 +25,10 @@ public static class AStar
   private static List<Node> OpenList;
   private static List<Node> CloseList;
   private static float searchTime = 0;
-  public static List<Vector3> Pathfind(TerrainBoard t, Vector2 g_start, Vector2 g_end)
+  public static List<Vector2> Pathfind(TerrainBoard t, Vector2 g_start, Vector2 g_end)
   {
     searchTime = 0;
-    List<Vector3> result = new List<Vector3>();
+    List<Vector2> result = new List<Vector2>();
     OpenList = new List<Node>();
     CloseList = new List<Node>();
     Node node_start = new Node(null, t.GetGrid(g_start));
@@ -47,18 +51,21 @@ public static class AStar
     //put node_start in open list
     OpenList.Add(node_start);
     //while open list is not empty
-    while (OpenList.Count != 0 && searchTime < 1000)
+    while (OpenList.Count != 0 && searchTime < 8000)
     {
       searchTime += 1;
       ////Take node_current as a node with the lowest f ( f = g + h) in open list
       Node node_current = FindCheapest(OpenList);
 
       ////if node_current == node_end, solution found, return
-      if (node_current.Equals(node_end))
+      bool equals = node_current.Equals(node_end);
+      if (equals)
       {
-        for (int i = OpenList.Count - 1; i >= 0; i++)
+        Node n = node_current;
+        while (n != null)
         {
-          result.Add(OpenList[i].grid.realPosition);
+          result.Add(n.grid.realPosition);
+          n = n.parent;
         }
         break;
       }
@@ -125,8 +132,7 @@ public static class AStar
       //CloseList.Add(node_current);
 
     }
-    if (OpenList.Count == 0)
-      return null;
+
 
     return result;
 

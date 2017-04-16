@@ -46,7 +46,7 @@ static class DrawHelper
     }
   }
   
-  public static void DrawQuad(Vector2 position, float size, Color color)
+  public static void DrawQuad(Vector3 position, float size, Color color)
   {
 
     if (Event.current.type != EventType.Repaint)
@@ -57,10 +57,10 @@ static class DrawHelper
     lineMat.SetPass(0);
     GL.Begin(GL.QUADS);
     GL.Color(color);
-    GL.Vertex3(min.x, min.y, 0);
-    GL.Vertex3(min.x, max.y, 0);
-    GL.Vertex3(max.x, max.y, 0);
-    GL.Vertex3(max.x, min.y, 0);
+    GL.Vertex3(min.x, min.y, position.z);
+    GL.Vertex3(min.x, max.y, position.z);
+    GL.Vertex3(max.x, max.y, position.z);
+    GL.Vertex3(max.x, min.y, position.z);
 
     GL.End();
   }
@@ -80,8 +80,8 @@ static class DrawHelper
 
   public static void DrawLine(Vector2 begin, Vector2 end, Color c)
   {
-    GL.Begin(GL.LINES);
     lineMat.SetPass(0);
+    GL.Begin(GL.LINES);
     GL.Color(c);
     GL.Vertex3(begin.x, begin.y, 0);
     GL.Vertex3(end.x, end.y, 0);

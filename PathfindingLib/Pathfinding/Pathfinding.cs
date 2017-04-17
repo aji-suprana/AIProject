@@ -325,6 +325,11 @@ namespace Pathfinding
         Debug.Log("(" + p.x + "," + p.y + ")");
       }
     }
+    public Stack<Location> GetResult()
+    {
+      Stack<Location> myResult = result;
+      return result;
+    }
 
     private Dictionary<Location, Location> parent = new Dictionary<Location, Location>();
     private Dictionary<Location, float> gVal = new Dictionary<Location, float>();

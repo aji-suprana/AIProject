@@ -14,11 +14,16 @@ public class LineSegment
     p = new Vector2[2] { p1, p0};
   }
 
-  Vector2[] p;
+  public Vector2[] p;
+  public Color color;
 }
 
 public static class DrawerStructure
 {
+  public static void Initialize()
+  {
+    line = new HashSet<LineSegment>();
+  }
   public static int CreateLine(Vector2 p0, Vector2 p1)
   {
     int currentID = line.Count;

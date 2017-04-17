@@ -7,7 +7,7 @@ public class AIMovement : MonoBehaviour
   [Range(1, 10)]
   public float speed = 3;
 
-  public Stack<Vector2> targets = new Stack<Vector2>();
+  private Queue<Vector2> targets = new Queue<Vector2>();
   private Vector3 target;
   private Vector3 dir;
 
@@ -31,7 +31,7 @@ public class AIMovement : MonoBehaviour
 
     if (targets.Count != 0)
     {
-      target = targets.Pop();
+      target = targets.Dequeue();
       dir = target - transform.position;
       dist = dir.magnitude;
       Debugger.Log("next target position");
@@ -47,7 +47,7 @@ public class AIMovement : MonoBehaviour
 
   }
 
-  public void ResetTarget(Stack<Vector2> _targets)
+  public void ResetTarget(Queue<Vector2> _targets)
   {
     targets = _targets;
     move = true;

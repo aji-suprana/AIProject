@@ -96,7 +96,7 @@ public class TerrainBoard : MonoBehaviour
   {
     int x = 0;
     int y = 0;
-    transformPositionToGridIndex(v, ref x, ref y);
+    transformPositionToGrid(v, ref x, ref y);
     if (x < 0 || y < 0 || x > map.width || y > map.height)
       return null;
 
@@ -105,7 +105,7 @@ public class TerrainBoard : MonoBehaviour
     return returnThis;
   }
 
-  public void transformPositionToGridIndex(Vector3 position, ref int x, ref int y)
+  public void transformPositionToGrid(Vector3 position, ref int x, ref int y)
   {
     startX = -map.width / 2;
     startY = -map.height / 2;
@@ -113,7 +113,7 @@ public class TerrainBoard : MonoBehaviour
     y = Mathf.RoundToInt(position.y - startY);
 
   }
-  public Location transformPositionToGridIndex(Vector3 position)
+  public Location transformPositionToGrid(Vector3 position)
   {
     startX = -map.width / 2;
     startY = -map.height / 2;
@@ -122,6 +122,10 @@ public class TerrainBoard : MonoBehaviour
     return new Location(x, y);
   }
 
+  public Vector2 transformGridToPosition(int x, int y)
+  {
+    return grids[x, y].realPosition;
+  }
 
   //public bool IsWall(int x, int y)
   //{
@@ -133,7 +137,7 @@ public class TerrainBoard : MonoBehaviour
   {
     int x = 0;
     int y = 0;
-    transformPositionToGridIndex(v, ref x, ref y);
+    transformPositionToGrid(v, ref x, ref y);
     //if (grids[x, y].IsWall())
     //  return;
     grids[x, y].SetColor(c);

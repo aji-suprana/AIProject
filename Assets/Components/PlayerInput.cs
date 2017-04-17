@@ -33,17 +33,27 @@ public class PlayerInput : MonoBehaviour
 
       TerrainBoard t = TerrainBoard.instance;
 
-      Location start = t.transformPositionToGridIndex(transform.position);
+      Location start = t.transformPositionToGrid(transform.position);
 
-      Location goal = t.transformPositionToGridIndex(v3);
+      Location goal = t.transformPositionToGrid(v3);
 
 
 
       AStarSearch search = new AStarSearch(TerrainBoard.map, start, goal);
       search.PrintResult();
+
+      Stack<Location> test = search.GetResult() ;
+      Location testl = test.Pop();
+      testl.Print();
       //Stack<Vector2> result = AStar.Pathfind(TerrainBoard.instance, transform.position, v3);
 
-      //mov.ResetTarget();
+      Queue<Vector2> targets = new Queue<Vector2>();
+      foreach (Location l in search.GetResult())
+      {
+        targets.Enqueue(t.transformGridToPosition(l.x, l.y));
+      }
+
+      mov.ResetTarget(targets);
     }
 
   }

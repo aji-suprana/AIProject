@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Pathfinding;
 public class PlayerInput : MonoBehaviour
 {
 
@@ -31,9 +31,19 @@ public class PlayerInput : MonoBehaviour
       v3.z = 0;
       v3 = Camera.main.ScreenToWorldPoint(v3);
 
-      mov = GetComponent<AIMovement>();
-      mov.targets.Clear();
-      mov.targets.Add( v3 - new Vector3(0, 0, Camera.main.transform.position.z));
+      TerrainBoard t = TerrainBoard.instance;
+
+      Location start = t.transformPositionToGridIndex(transform.position);
+
+      Location goal = t.transformPositionToGridIndex(v3);
+
+
+
+      AStarSearch search = new AStarSearch(TerrainBoard.map, start, goal);
+      search.PrintResult();
+      //Stack<Vector2> result = AStar.Pathfind(TerrainBoard.instance, transform.position, v3);
+
+      //mov.ResetTarget();
     }
 
   }

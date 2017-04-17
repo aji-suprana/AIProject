@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TerrainType
-{
-  EMPTY = 0,
-  WALL = 1
-}
+//public enum TerrainType
+//{
+//  EMPTY = 0,
+//  WALL = 1
+//}
 
 public class Grid
 {
@@ -36,40 +36,16 @@ public class Grid
     y = g.y;
     color = g.color;
     realPosition = g.realPosition;
-    terrainType = g.terrainType;
   }
 
-  //Setting Grid type
-  public void SetType(TerrainType _terrainType)
-  {
-    terrainType = _terrainType;
-    switch (_terrainType)
-    {
-      case TerrainType.WALL:
-        color = Color.black;
-        break;
-    }
-  }
-
-  public TerrainType GetTerrainType()
-  {
-    return terrainType;
-  }
-
-  public bool IsWall()
-  {
-    if (terrainType == TerrainType.WALL)
-      return true;
-    return false;
-  }
 
   //Get color
-  public Color _Color()
+  public Color GetColor()
   {
     return color;
   }
   //Set color
-  public void _Color(Color c)
+  public void SetColor(Color c)
   {
     color = c;
   }
@@ -81,12 +57,12 @@ public class Grid
   Material Mat;
   public int x = 0; //gridCoordinate
   public int y = 0; //gridCoordinate
-  private Color color = Color.white; // drawing color on screen
-  private TerrainType terrainType;
+  private Color color = new Color(0.7f,0.7f,0.7f); // drawing color on screen
+  //private TerrainType terrainType;
 
   public void Draw()
   {
     Vector3 position = new Vector3(realPosition.x, realPosition.y, 3);
-    DrawHelper.DrawQuad(realPosition, 1, color);
+    DrawHelper.DrawQuad(realPosition, 0.9f, color);
   }
 }

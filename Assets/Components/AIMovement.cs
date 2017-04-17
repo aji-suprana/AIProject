@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class AIMovement : MonoBehaviour
 {
-  [Range(1,10)]
+  [Range(1, 10)]
   public float speed = 3;
 
-  public List<Vector2> targets;
+  public Stack<Vector2> targets = new Stack<Vector2>();
   private Vector3 target;
   private Vector3 dir;
 
@@ -18,36 +18,50 @@ public class AIMovement : MonoBehaviour
     dir = Vector3.zero;
   }
 
-  void WalkThroughTargets()
+  float dist = 0;
+  bool move = false;
+  IEnumerator WalkThroughTargets()
   {
-    if (targets.Count > 0)
+    while (dist > 0.1f)
     {
-      target = targets[0];
       dir = target - transform.position;
-      float dist = dir.magnitude;
-
-      if (dist < 0.1f)
-      {
-        targets.RemoveAt(0);
-        if (targets.Count != 0)
-        {
-          target = targets[0];
-          Debugger.Log("next target position");
-        }
-        else
-        {
-          Debugger.Log("target reached");
-          target = transform.position;
-          dir = Vector3.zero;
-        }
-      }
+      dist = dir.magnitude;
+      yield return null;
     }
+
+    if (targets.Count != 0)
+    {
+      target = targets.Pop();
+      dir = target - transform.position;
+      dist = dir.magnitude;
+      Debugger.Log("next target position");
+    }
+    else
+    {
+      if(move)
+        Debugger.Log("target reached");
+      move = false;
+      dist = 0;
+      dir = Vector3.zero;
+    }
+
+  }
+
+  public void ResetTarget(Stack<Vector2> _targets)
+  {
+    targets = _targets;
+    move = true;
+    dist = 0;
   }
 
   void Update()
   {
-    WalkThroughTargets();
+    if (targets.Count > 0)
+      move = true;
 
-    transform.position += dir.normalized * speed * Time.deltaTime;
+    if (move)
+      StartCoroutine(WalkThroughTargets());
+    
+    transform.position += dir.normalized * Time.deltaTime * speed;
   }
 }

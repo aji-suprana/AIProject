@@ -1,0 +1,59 @@
+Initialize engine version: 5.5.0f3 (38b4efef76f0)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 750 Ti (ID=0x1380)
+    Vendor:   NVIDIA
+    VRAM:     2016 MB
+    Driver:   21.21.13.7653
+Begin MonoManager ReloadAssembly
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\Pathfinding.dll (this message is harmless)
+Loading G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\Pathfinding.dll into Unity Child Domain
+- Completed reload, in  0.147 seconds
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: G:\DigipenProject-201703\CS380\FinalProject\AIProject\bbb_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 5760x1080 at -1920,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.055605 ms
+Initialized: Debugger
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+TerrainBoard Initialized
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Deserializing Map: G:/DigipenProject-201703/CS380/FinalProject/AIProject/bbb_Data/StreamingAssets/Maps/4.terrain
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Initialized: GridboardFeedback Value
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+SoundGrid
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at DrawHelper.DrawQuad (Vector3 position, Single size, Color color) [0x00000] in <filename unknown>:0 
+  at Grid.Draw () [0x00000] in <filename unknown>:0 
+  at TerrainBoard.DrawGrid () [0x00000] in <filename unknown>:0 
+  at TerrainBoard.OnPostRender () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+

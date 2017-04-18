@@ -43,6 +43,8 @@ public class AIInput : AIBrain
   float maxAngle = Mathf.PI;
   float maxDist = 10;
 
+
+
   AIMovement mov;
   AIState state = AIState.Wander;
   fn SelectTarget = null;

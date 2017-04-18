@@ -24,7 +24,7 @@ public class SoundEmitter
   public float soundPower;
   public readonly Location location;
   public List<Tuple<Vector2, Vector2>> circle;
-  public int isChild = 0;
+  public int ChildCount = 0;
   public void Update()
   {
     intensity = soundPower / ( Mathf.PI  * radius * radius);
@@ -189,11 +189,11 @@ public class SoundGrid : MonoBehaviour
     //}
   }
 
-  public static void CreateEmitter(Vector3 pos, float SoundPower = 10, int _isChild = 0)
+  public static void CreateEmitter(Vector3 pos, float SoundPower = 10, int _ChildCount = 0)
   {
     Location l = TerrainBoard.transformPositionToGrid(pos);
     SoundEmitter e = new SoundEmitter(l,SoundPower);
-    e.isChild = _isChild;
+    e.ChildCount = _ChildCount;
    // Emitters[l] = e;
 
     toBeCreated.Enqueue(e);
@@ -232,14 +232,17 @@ public class SoundGrid : MonoBehaviour
         bool intersected = false;
         foreach (Location i in walls)
         {
+          if (i.x == e.location.x && i.y == e.location.y)
+            continue;
           Vector2 rayStart =new Vector2(x,y);
           Vector2 rayEnd = new Vector2(e.location.x, e.location.y);
           if (LineAABBIntersect(new Vector2(i.x, i.y), rayStart, rayEnd))
           {
             intersected = true;
-            if (e.isChild < 2)
+            if (e.ChildCount < 3)
             {
-              CreateEmitter(TerrainBoard.transformGridToPosition(i.x, i.y), e.soundPower/2,++e.isChild);
+              if(!Emitters.ContainsKey(i))
+              CreateEmitter(TerrainBoard.transformGridToPosition(i.x, i.y), e.soundPower/3,++e.ChildCount);
 
             }
           }

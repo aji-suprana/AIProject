@@ -76,7 +76,7 @@ public class AIMovement : MonoBehaviour
 
   }
 
-  float time = 0;
+  float time = 1;
   void StepSoundEmmiting()
   {
     if (name != "Player")

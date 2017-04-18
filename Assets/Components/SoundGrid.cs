@@ -5,24 +5,43 @@ using Pathfinding;
 
 public class SoundEmitter
 {
-  public SoundEmitter(Location l)
+  public SoundEmitter(Location l,float _SoundPower)
   {
     location = l;
     radius = 0.3f;
+    soundPower = _SoundPower;
+    circleLine = DrawerStructure.CreateCircle(TerrainBoard.transformGridToPosition(l.x, l.y), radius,new Color(0,1,1));
   }
+
+  //~SoundEmitter()
+  //{
+  //  Debugger.Log("Removed");
+  //  DrawerStructure.RemoveCircle(circleLine);
+  //}
+  public int circleLine;
   public float radius;
   public float intensity;
+  public float soundPower;
   public readonly Location location;
+  public List<Tuple<Vector2, Vector2>> circle;
+  public int isChild = 0;
   public void Update()
   {
-    intensity = 10.0f / (2 * Mathf.PI * radius * radius);
-    if (intensity < 0.01)
+    intensity = soundPower / ( Mathf.PI  * radius * radius);
+    if (intensity < 0.1)
+    {
       intensity = 0;
+
+    }
 
     if (intensity > 1)
       intensity = 1;
 
     radius += Time.deltaTime * 10;
+
+    if (circleLine < DrawerStructure.circle.Count) 
+    DrawerStructure.circle[circleLine].radius = radius;
+
   }
 }
 
@@ -30,10 +49,11 @@ public class SoundGrid : MonoBehaviour
 {
   static Dictionary<Location, SoundEmitter> Emitters = new Dictionary<Location,SoundEmitter>();
   List<Location> toBeRemoved = new List<Location>();
+  static Queue<SoundEmitter> toBeCreated = new Queue<SoundEmitter>();
   static float[,] IntensityGrid;
   static int width;
   static int height;
-  int line;
+
   // Use this for initialization
   void Start()
   {
@@ -41,7 +61,7 @@ public class SoundGrid : MonoBehaviour
     IntensityGrid = new float[TerrainBoard.map.width, TerrainBoard.map.height];
     width = TerrainBoard.map.width;
     height = TerrainBoard.map.height;
-    //line = DrawerStructure.CreateLine(new Vector2(0, 0), new Vector2(10, 10));
+    //ine = DrawerStructure.CreateLine(new Vector2(0, 0), new Vector2(10, 10));
   }
 
   public static void ChangeMap()
@@ -113,19 +133,28 @@ public class SoundGrid : MonoBehaviour
       v3 = Camera.main.ScreenToWorldPoint(v3);
       CreateEmitter(v3);
     }
-
+    //Delete all emitter on delete list
     foreach (Location l in toBeRemoved)
     {
       Emitters.Remove(l);
     }
     toBeRemoved.Clear();
+    //Create all emitter on create list
+    while (toBeCreated.Count > 0)
+    {
+      SoundEmitter e = toBeCreated.Dequeue();
+      Emitters[e.location] = e;
+    }
 
     foreach (SoundEmitter e in Emitters.Values)
     {
       e.Update();
-      if (e.intensity < 0.04f)
+      if (e.intensity <= 0.01f)
+      {
         toBeRemoved.Add(e.location);
-      UpdateSoundParticle(e.location, e.radius, e.intensity);
+      }
+
+      UpdateSoundParticle(e);
     }
 
 
@@ -136,7 +165,7 @@ public class SoundGrid : MonoBehaviour
       {
         float currentIntensity = IntensityGrid[x, y];
 
-        currentIntensity -= Time.deltaTime * 5 * currentIntensity;
+        currentIntensity -= Time.deltaTime * 2 * currentIntensity;
         if (currentIntensity < 0)
           currentIntensity = 0;
         IntensityGrid[x, y] = currentIntensity;
@@ -160,24 +189,27 @@ public class SoundGrid : MonoBehaviour
     //}
   }
 
-  public static void CreateEmitter(Vector3 pos)
+  public static void CreateEmitter(Vector3 pos, float SoundPower = 10, int _isChild = 0)
   {
     Location l = TerrainBoard.transformPositionToGrid(pos);
-    SoundEmitter e = new SoundEmitter(l);
-    Emitters[l] = e;
-  }
+    SoundEmitter e = new SoundEmitter(l,SoundPower);
+    e.isChild = _isChild;
+   // Emitters[l] = e;
 
-  private void UpdateSoundParticle(Location l, float radius, float intensity)
+    toBeCreated.Enqueue(e);
+  }
+  //Location l, float radius, float intensity,float power)
+  private void UpdateSoundParticle(SoundEmitter e)
   {
-    int Rangex = l.x + (int)radius;
-    int Rangey = l.y + (int)radius;
+    int Rangex = e.location.x + (int)e.radius;
+    int Rangey = e.location.y + (int)e.radius;
     List<Location> walls = new List<Location>();
 
     //Find wall
-    for (int x = l.x - (int)radius - 1; x < Rangex; x++)
+    for (int x = e.location.x - (int)e.radius - 1; x < Rangex; x++)
     {
 
-      for (int y = l.y - (int)radius; y < Rangey; y++)
+      for (int y = e.location.y - (int)e.radius; y < Rangey; y++)
       {
         if (TerrainBoard.map.IsWall(x, y))
         {
@@ -194,26 +226,33 @@ public class SoundGrid : MonoBehaviour
       {
         if (y < 0 || y >= TerrainBoard.map.height) continue;
 
-        Vector2 dir = new Vector2(x - l.x, y - l.y);
+        Vector2 dir = new Vector2(x - e.location.x, y - e.location.y);
 
         //Check if collided with wall
         bool intersected = false;
         foreach (Location i in walls)
         {
           Vector2 rayStart =new Vector2(x,y);
-          Vector2 rayEnd = new Vector2(l.x, l.y);
+          Vector2 rayEnd = new Vector2(e.location.x, e.location.y);
           if (LineAABBIntersect(new Vector2(i.x, i.y), rayStart, rayEnd))
           {
             intersected = true;
+            if (e.isChild < 2)
+            {
+              CreateEmitter(TerrainBoard.transformGridToPosition(i.x, i.y), e.soundPower/2,++e.isChild);
+
+            }
           }
         }
 
         if (intersected)
-          continue;
-
-        if (dir.magnitude < radius)
         {
-          float currentIntensity = IntensityGrid[x, y] + intensity;
+          continue;
+        }
+
+        if (dir.magnitude < e.radius)
+        {
+          float currentIntensity = IntensityGrid[x, y] + e.intensity;
           if (currentIntensity > 1)
             currentIntensity = 1;
           IntensityGrid[x, y] = currentIntensity;

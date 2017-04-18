@@ -14,15 +14,23 @@ namespace UnitTest
       UnitTest test = new UnitTest();
       test.TestPathFinding();
 
-      HashSet<int> hashTest = new HashSet<int>();
-      hashTest.Add(0);
-      hashTest.Add(0);
-      hashTest.Add(0);
+      //HashSet<int> hashTest = new HashSet<int>();
+      //hashTest.Add(0);
+      //hashTest.Add(0);
+      //hashTest.Add(0);
 
-      Console.WriteLine(hashTest.Count);
-      hashTest.Remove(0);
+      //Console.WriteLine(hashTest.Count);
+      //hashTest.Remove(0);
 
-      Console.WriteLine(hashTest.Count);
+      //Console.WriteLine(hashTest.Count);
+      Random rand = new Random();
+      Console.WriteLine(rand.Next(-100,100));
+      Console.WriteLine(rand.Next(-100,100));
+      Console.WriteLine(rand.Next(-100,100));
+      Console.WriteLine(rand.Next(-100,100));
+      Console.WriteLine(rand.Next(-100,100));
+      Console.WriteLine(rand.Next(-100,100));
+
       while (true)
       {
 

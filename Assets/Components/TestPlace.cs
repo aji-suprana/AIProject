@@ -22,8 +22,8 @@ public class TestPlace : MonoBehaviour
 
   private void OnPostRender()
   {
-    TerrainBoard.instance.SetColor(playerPos, Color.grey);
-    TerrainBoard.instance.SetColor(targetPos, Color.blue);
+    TerrainBoard.SetColor(playerPos, Color.grey);
+    TerrainBoard.SetColor(targetPos, Color.blue);
 
     Vector3 prevPoint = result.Peek();
     Vector3 curPoint = result.Pop();

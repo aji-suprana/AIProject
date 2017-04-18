@@ -22,9 +22,10 @@ namespace Pathfinding
     public static _print Log = new _print(Console.WriteLine);
     public static _print LogError = new _print(Console.WriteLine);
   }
+
   public class GridMap
   {
-    HashSet<Location> walls = new HashSet<Location>();
+    public HashSet<Location> walls = new HashSet<Location>();
     public readonly int width;
     public readonly int height;
     public static readonly Location[] DIRS = new[]
@@ -52,6 +53,7 @@ namespace Pathfinding
       if (!File.Exists(path))
       {
         Debug.LogError("File does not exist");
+        width = -1;
         return;
       }
 
@@ -227,17 +229,13 @@ namespace Pathfinding
 
   public class PriorityQueue<T>
   {
-    // I'm using an unsorted array for this example, but ideally this
-    // would be a binary heap. There's an open issue for adding a binary
-    // heap to the standard C# library: https://github.com/dotnet/corefx/issues/574
-    //
-    // Until then, find a binary heap class:
-    // * https://bitbucket.org/BlueRaja/high-speed-priority-queue-for-c/wiki/Home
-    // * http://visualstudiomagazine.com/articles/2012/11/01/priority-queues-with-c.aspx
-    // * http://xfleury.github.io/graphsearch.html
-    // * http://stackoverflow.com/questions/102398/priority-queue-in-net
-
+    //CHANGE LIST TO HEAP 
     private List<Tuple<T, double>> elements = new List<Tuple<T, double>>();
+
+    public void Clear()
+    {
+      elements.Clear();
+    }
 
     public int Count
     {
@@ -269,15 +267,29 @@ namespace Pathfinding
 
   public class AStarSearch
   {
-    public AStarSearch(GridMap map, Location start, Location goal)
+    PriorityQueue<Location> openList = new PriorityQueue<Location>();
+    GridMap map;
+    public AStarSearch(GridMap map)
     {
-      Debug.Log("Search Started...");
-      Debug.Log("--startPoint--");
-      start.Print();
-      Debug.Log("--goalPoint--");
-      goal.Print();
+      this.map = map;
+    }
 
-      var openList = new PriorityQueue<Location>();
+    public void Search(Location start, Location goal)
+    {
+      result.Clear();
+      parent.Clear();
+      openList.Clear();
+      gVal.Clear();
+
+      if (!map.InBound(goal))
+        return;
+
+      //Debug.Log("Search Started...");
+      //Debug.Log("--startPoint--");
+      //start.Print();
+      //Debug.Log("--goalPoint--");
+      //goal.Print();
+
       //push start node into openList
       openList.Enqueue(start, 0); // weight 0 at the begining;
 
@@ -316,6 +328,7 @@ namespace Pathfinding
           }
         }
       }
+
     }
     public void PrintResult()
     {
@@ -342,8 +355,17 @@ namespace Pathfinding
     private static float DefaultHeuristicFn(Location a, Location b)
     {
       Location dir = b - a;
-      return (float)Math.Sqrt((dir.x * dir.x + dir.y * dir.y));
+      return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
+
+    public IEnumerable<Location> GetExploredList()
+    {
+      foreach (Location i in gVal.Keys)
+      {
+        yield return i;
+      }
+    }
+
 
     private void PrintNeighbors(IEnumerable<Location> l)
     {

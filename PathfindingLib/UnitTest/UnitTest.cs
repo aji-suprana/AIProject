@@ -23,8 +23,9 @@ namespace UnitTest
 
     public void TestPathFinding()
     {
-      Initialize("Small");
-      AStarSearch search = new AStarSearch(map, new Location(1, 1), new Location(1, 2));
+      Initialize("5x5");
+      AStarSearch search = new AStarSearch(map);
+      search.Search(new Location(0,0), new Location (2,2));
       search.PrintResult ();
     }
   }

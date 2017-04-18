@@ -18,7 +18,6 @@ public static class Debugger {
     Log("Initialized: Debugger");
   }
 
-
   public static void Log(object s)
   {
     Debug.Log(s);

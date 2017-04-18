@@ -14,6 +14,7 @@ public class Drawer : MonoBehaviour
     {
       DrawHelper.DrawLine(l.p[0], l.p[1],l.color);
     }
+    
   }
 
 }

@@ -9,5 +9,6 @@ public class ChangeMap : MonoBehaviour {
   {
     //MapReader.ReadMap(TerrainBoard.instance,GetComponent<Text>().text);
     TerrainBoard.instance.ChangeMap(GetComponent<Text>().text);
+    SoundGrid.ChangeMap();
   }
 }

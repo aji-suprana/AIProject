@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using Pathfinding;
 
@@ -11,10 +12,12 @@ public class TerrainBoard : MonoBehaviour
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   private void Start()
   {
+    Debugger.Log("TerrainBoard Initialized");
+
     Pathfinding.Debug.Log = Debugger.Log;
     Pathfinding.Debug.LogError = Debugger.LogError;
 
-    ChangeMap("1");
+    ChangeMap("4");
 
     instance = this;
     //MapReader.ReadMap(this, "Test"); // InitializeGrid is called after map is read
@@ -41,22 +44,31 @@ public class TerrainBoard : MonoBehaviour
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public static TerrainBoard instance;
   public static GridMap map;
+  private static Grid[,] grids;
 
   ////////////PUBLIC VAR
 
 
   ////////////PRIVATE VAR
-  private Grid[,] grids;
-  private float startX;
-  private float startY;
+  private static float startX;
+  private static float startY;
 
   ////////////PUBLIC FUNCTIONS
   public void ChangeMap(string path)
   {
     string realpath = Application.dataPath + "/StreamingAssets/Maps/" + path + ".terrain";
     map = new GridMap(realpath);
+    if (map.width == -1)
+      return;
+
+    foreach (AIBrain brain in GameObject.FindObjectsOfType<AIBrain>())
+    {
+      brain.SearchAlgorithm = new AStarSearch(map);
+    }
+
     InitializeGridFeedback();
   }
+
   /// Initalizing all grid on the board
   public void InitializeGridFeedback()
   {
@@ -105,7 +117,8 @@ public class TerrainBoard : MonoBehaviour
     return returnThis;
   }
 
-  public void transformPositionToGrid(Vector3 position, ref int x, ref int y)
+  ///Transforming Vector3 position into grid coordinate by passing coordinate x y as reference
+  public static void transformPositionToGrid(Vector3 position, ref int x, ref int y)
   {
     startX = -map.width / 2;
     startY = -map.height / 2;
@@ -113,7 +126,9 @@ public class TerrainBoard : MonoBehaviour
     y = Mathf.RoundToInt(position.y - startY);
 
   }
-  public Location transformPositionToGrid(Vector3 position)
+
+  ///Transforming Vector3 position into grid coordinate by returning Location type
+  public static Location transformPositionToGrid(Vector3 position)
   {
     startX = -map.width / 2;
     startY = -map.height / 2;
@@ -122,43 +137,46 @@ public class TerrainBoard : MonoBehaviour
     return new Location(x, y);
   }
 
-  public Vector2 transformGridToPosition(int x, int y)
+  ///Transforming Grid coordinate into real world position in Vector2
+  public static Vector2 transformGridToPosition(int x, int y)
   {
     return grids[x, y].realPosition;
   }
 
-  //public bool IsWall(int x, int y)
-  //{
-  //  return grids[x, y].GetTerrainType() == TerrainType.WALL ;
-  //}
-
   /// Set Color of a grid
-  public void SetColor(Vector3 v,Color c)
+  public static void SetColor(Vector3 v,Color c)
   {
     int x = 0;
     int y = 0;
     transformPositionToGrid(v, ref x, ref y);
-    //if (grids[x, y].IsWall())
-    //  return;
+    if (map.IsWall(x, y))
+      return;
+
     grids[x, y].SetColor(c);
   }
 
   /// Set Color of a grid
-  public void SetColor(int x, int y, Color c) 
+  public static void SetColor(int x, int y, Color c) 
   {
-    //if (grids[x, y].IsWall())
-    //  return;
+    if (map.IsWall(x, y))
+      return;
     grids[x, y].SetColor(c);
   }
 
+  /// Get Color of a grid
+  public static Color GetColor(int x, int y)
+  {
+    return grids[x, y].GetColor();
+  }
 
-  public void ResetColor()
+
+  public static void ResetColor()
   {
     for (int x = 0; x < map.width; x++)
       for (int y = 0; y < map.width; y++)
       {
-        //if (grids[x, y].IsWall())
-        //  continue;
+        if (map.IsWall(x,y))
+          continue;
         grids[x, y].SetColor(Color.white);
 
       }

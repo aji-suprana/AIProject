@@ -57,7 +57,8 @@ public class Grid
   Material Mat;
   public int x = 0; //gridCoordinate
   public int y = 0; //gridCoordinate
-  private Color color = new Color(0.7f,0.7f,0.7f); // drawing color on screen
+  private Color color = Color.white; // drawing color on screen//
+
   //private TerrainType terrainType;
 
   public void Draw()

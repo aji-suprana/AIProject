@@ -7,6 +7,7 @@ public class AIMovement : MonoBehaviour
   [Range(1, 10)]
   public float speed = 3;
 
+  public delegate void finishMove(bool b);
   private Queue<Vector2> targets = new Queue<Vector2>();
   private Vector3 target;
   private Vector3 dir;
@@ -34,12 +35,13 @@ public class AIMovement : MonoBehaviour
       target = targets.Dequeue();
       dir = target - transform.position;
       dist = dir.magnitude;
-      Debugger.Log("next target position");
     }
     else
     {
-      if(move)
-        Debugger.Log("target reached");
+      if (move)
+      {
+        //targetReached
+      }
       move = false;
       dist = 0;
       dir = Vector3.zero;
@@ -53,15 +55,38 @@ public class AIMovement : MonoBehaviour
     move = true;
     dist = 0;
   }
-
+  public int GetTargetCount()
+  {
+    return targets.Count;
+  }
   void Update()
   {
     if (targets.Count > 0)
+    {
       move = true;
+      StepSoundEmmiting();
+
+    }
+
 
     if (move)
       StartCoroutine(WalkThroughTargets());
-    
+
     transform.position += dir.normalized * Time.deltaTime * speed;
+
+  }
+
+  float time = 0;
+  void StepSoundEmmiting()
+  {
+    if (name != "Player")
+      return;
+
+    time += Time.deltaTime;
+    if (time > 0.5f)
+    {
+      SoundGrid.CreateEmitter(transform.position);
+      time = 0;
+    }
   }
 }

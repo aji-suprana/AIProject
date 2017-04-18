@@ -22,7 +22,7 @@ public static class DrawerStructure
 {
   public static void Initialize()
   {
-    line = new HashSet<LineSegment>();
+    line = new List<LineSegment>();
   }
   public static int CreateLine(Vector2 p0, Vector2 p1)
   {
@@ -42,5 +42,5 @@ public static class DrawerStructure
     line.Remove(l);
   }
 
-  public static HashSet<LineSegment> line;
+  public static List<LineSegment> line;
 }

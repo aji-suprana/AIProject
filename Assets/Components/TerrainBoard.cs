@@ -17,7 +17,7 @@ public class TerrainBoard : MonoBehaviour
     Pathfinding.Debug.Log = Debugger.Log;
     Pathfinding.Debug.LogError = Debugger.LogError;
 
-    ChangeMap("4");
+    ChangeMap("TestDifraction1");
 
     instance = this;
     //MapReader.ReadMap(this, "Test"); // InitializeGrid is called after map is read

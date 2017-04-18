@@ -25,6 +25,7 @@ public class SoundEmitter
   public readonly Location location;
   public List<Tuple<Vector2, Vector2>> circle;
   public int ChildCount = 0;
+  public bool isChild = false;
   public void Update()
   {
     intensity = soundPower / ( Mathf.PI  * radius * radius);
@@ -50,6 +51,8 @@ public class SoundGrid : MonoBehaviour
   static Dictionary<Location, SoundEmitter> Emitters = new Dictionary<Location,SoundEmitter>();
   List<Location> toBeRemoved = new List<Location>();
   static Queue<SoundEmitter> toBeCreated = new Queue<SoundEmitter>();
+  static List<Location> toBeCreatedLocation = new List<Location>();
+
   static float[,] IntensityGrid;
   static int width;
   static int height;
@@ -139,6 +142,7 @@ public class SoundGrid : MonoBehaviour
       Emitters.Remove(l);
     }
     toBeRemoved.Clear();
+    toBeCreatedLocation.Clear();
     //Create all emitter on create list
     while (toBeCreated.Count > 0)
     {
@@ -189,12 +193,12 @@ public class SoundGrid : MonoBehaviour
     //}
   }
 
-  public static void CreateEmitter(Vector3 pos, float SoundPower = 10, int _ChildCount = 0)
+  public static void CreateEmitter(Vector3 pos, float SoundPower = 10, bool isChild = false)
   {
     Location l = TerrainBoard.transformPositionToGrid(pos);
     SoundEmitter e = new SoundEmitter(l,SoundPower);
-    e.ChildCount = _ChildCount;
-   // Emitters[l] = e;
+    e.ChildCount = 0;
+   //Emitters[l] = e;
 
     toBeCreated.Enqueue(e);
   }
@@ -230,8 +234,20 @@ public class SoundGrid : MonoBehaviour
 
         //Check if collided with wall
         bool intersected = false;
+
         foreach (Location i in walls)
         {
+          int wallNeighbourCount = 0;
+          if (TerrainBoard.map.IsWall(i + new Location(-1, -1))) wallNeighbourCount++;
+          if (TerrainBoard.map.IsWall(i + new Location(0, -1))) wallNeighbourCount++;
+          if (TerrainBoard.map.IsWall(i + new Location(1, -1))) wallNeighbourCount++;
+          if (TerrainBoard.map.IsWall(i + new Location(-1, 0))) wallNeighbourCount++;
+          if (TerrainBoard.map.IsWall(i + new Location(1, 0))) wallNeighbourCount++;
+          if (TerrainBoard.map.IsWall(i + new Location(-1, 1))) wallNeighbourCount++;
+          if (TerrainBoard.map.IsWall(i + new Location(0, 1))) wallNeighbourCount++;
+          if (TerrainBoard.map.IsWall(i + new Location(1, 1))) wallNeighbourCount++;
+
+
           if (i.x == e.location.x && i.y == e.location.y)
             continue;
           Vector2 rayStart =new Vector2(x,y);
@@ -239,10 +255,13 @@ public class SoundGrid : MonoBehaviour
           if (LineAABBIntersect(new Vector2(i.x, i.y), rayStart, rayEnd))
           {
             intersected = true;
-            if (e.ChildCount < 3)
+            if (e.ChildCount < 3 && !e.isChild)
             {
-              if(!Emitters.ContainsKey(i))
-              CreateEmitter(TerrainBoard.transformGridToPosition(i.x, i.y), e.soundPower/3,++e.ChildCount);
+              if (!toBeCreatedLocation.Contains(e.location) && wallNeighbourCount <2 )
+              {
+                ++e.ChildCount;
+                CreateEmitter(TerrainBoard.transformGridToPosition(i.x, i.y), e.soundPower / 3,true);
+              }
 
             }
           }

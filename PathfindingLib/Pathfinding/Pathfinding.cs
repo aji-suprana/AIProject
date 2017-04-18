@@ -25,7 +25,8 @@ namespace Pathfinding
 
   public class GridMap
   {
-    public HashSet<Location> walls = new HashSet<Location>();
+    //public HashSet<Location> walls = new HashSet<Location>();
+    public bool[,] walls;
     public readonly int width;
     public readonly int height;
     public static readonly Location[] DIRS = new[]
@@ -80,6 +81,7 @@ namespace Pathfinding
 
           this.width = Int32.Parse(boardSize[0]);
           this.height = Int32.Parse(boardSize[1]);
+          walls= new bool[this.width, this.height];
         }
         else
         {
@@ -88,7 +90,9 @@ namespace Pathfinding
           foreach (string i in terrainType)
           {
             if (Int32.Parse(i) == 1)
-              this.walls.Add(new Location(x, ySize));
+              walls[x,ySize] = true;
+            else
+              walls[x, ySize] = false;
             ++x;
           }
         }
@@ -104,20 +108,34 @@ namespace Pathfinding
     {
       return i.x >= 0 && i.y >= 0 && i.x < width && i.y < height;
     }
+
+    public bool InBound(int x, int y)
+    {
+      return x >= 0 && y >= 0 && x < width && y < height;
+    }
+
     public bool IsWall(Location i)
     {
-      bool isWall = walls.Contains(i);
+
       bool outBound = !InBound(i);
+      if (outBound)
+        return false;
+
+      bool isWall = walls[i.x, i.y];
+
       //iswall if this tile is a wall or is out of bound;
-      return walls.Contains(i) || outBound;
+      return isWall;
     }
     public bool IsWall(int x, int y)
     {
-      Location i = new Location(x, y);
-      bool isWall = walls.Contains(i);
-      bool outBound = !InBound(i);
+
+      bool outBound = !InBound(x,y);
+      if (outBound)
+        return false;
+
+      bool isWall = walls[x, y];
       //iswall if this tile is a wall or is out of bound;
-      return walls.Contains(i) || outBound;
+      return isWall;
     }
     public float Cost(Location a, Location b)
     {
